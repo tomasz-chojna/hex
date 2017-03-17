@@ -1,0 +1,2 @@
+test('Application Test', () => {
+});
