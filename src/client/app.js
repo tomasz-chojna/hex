@@ -1,37 +1,37 @@
 import { ApolloClient, ApolloProvider, gql, graphql } from 'react-apollo';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {LoginComponent} from "./components/login";
+import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
+import {HelloWorldComponent} from "./components/hello";
 
-const HelloWorld = ({ data: {loading, error, helloWorld }}) => {
-    if (loading) {
-        return <p>Loading ...</p>;
-    }
-    if (error) {
-        return <p>{error.message}</p>;
-    }
-    return <h1>{ helloWorld.text }</h1>
-};
-
-const HelloWorldComponent = graphql(gql`
-    query HelloWorldQuery {
-        helloWorld {
-            text
-        }
-    }
-`)(HelloWorld);
 
 class App extends React.Component {
     render() {
         return (
-            <HelloWorldComponent/>
+            <div className="container">
+                <div className="row">
+                    <div className="col-md-4 col-md-offset-4">
+                        <LoginComponent nextState="/players"/>
+                    </div>
+                </div>
+            </div>
         )
     }
 };
 
+
 const client = new ApolloClient();
 ReactDOM.render(
     <ApolloProvider client={client}>
-        <App/>
+        <BrowserRouter>
+            <div>
+                <Route exact path="/" component={App}/>
+                <Route path="/players" component={HelloWorldComponent}/>
+                <Route exact path="/session/:sessionId"/>
+                <Route exact path="/session/:sessionId/winner"/>
+            </div>
+        </BrowserRouter>
     </ApolloProvider>,
     document.getElementById('root')
 );
