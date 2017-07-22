@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon --exec babel-node --presets es2015,stage-0 src/server/app.js",
-    "test": "NODE_ENV=test nyc --check-coverage mocha"
+    "test": "mocha test/**/*.js --compilers babel-register"
   },
   "repository": {
     "type": "git",
@@ -46,20 +46,28 @@
     "react": "^15.6.1",
     "react-apollo": "^1.4.8",
     "react-dom": "^15.6.1",
+    "react-router": "^4.1.2",
+    "react-router-dom": "^4.1.2",
     "webpack": "^3.3.0"
   },
   "nyc": {
-    "check_coverage": true,
+    "lines": 0,
+    "statements": 0,
+    "functions": 0,
+    "branches": 0,
     "include": [
-      "./src/**/*.js"
+      "**/*.js"
     ],
     "require": [
       "babel-register"
     ],
     "reporter": [
-      "text"
+      "text",
+      "text-summary",
+      "lcov"
     ],
-    "sourceMap": false,
-    "instrument": false
+    "sourceMap": true,
+    "instrument": true,
+    "checkCoverage": true
   }
 }

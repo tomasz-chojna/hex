@@ -1,5 +1,9 @@
 export default {
     Query: {
-        helloWorld: () => ({ text: 'Hello World' }),
+        helloWorld: async () => {
+            return await new Promise((resolve, reject) => {
+                resolve({ text: 'Hello World' });
+            });
+        },
     }
 };
