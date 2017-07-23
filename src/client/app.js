@@ -5,6 +5,7 @@ import {LoginComponentWithCreatingPlayer} from "./components/login";
 import {BrowserRouter, Route} from "react-router-dom";
 import {ActivePlayersListComponent} from "./components/players";
 import {addGraphQLSubscriptions, SubscriptionClient} from "subscriptions-transport-ws";
+import {GameSessionComponent} from "./components/session";
 
 class App extends React.Component {
     render() {
@@ -35,7 +36,7 @@ ReactDOM.render(
             <div>
                 <Route exact path="/" component={App}/>
                 <Route path="/players" component={ActivePlayersListComponent}/>
-                <Route exact path="/session/:sessionId"/>
+                <Route exact path="/session/:sessionId" component={GameSessionComponent}/>
                 <Route exact path="/session/:sessionId/winner"/>
             </div>
         </BrowserRouter>
