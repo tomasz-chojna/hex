@@ -62,7 +62,12 @@
     "functions": 0,
     "branches": 0,
     "include": [
-      "**/*.js"
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "public/**/*.js",
+      "coverage/**/*",
+      "test/**/*"
     ],
     "require": [
       "babel-register"
@@ -72,6 +77,7 @@
       "text-summary",
       "lcov"
     ],
+    "all": true,
     "sourceMap": true,
     "instrument": true,
     "checkCoverage": true
