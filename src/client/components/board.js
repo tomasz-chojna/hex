@@ -13,21 +13,69 @@ function hexBoardSVG(boardSize, edgeSize) {
     const bottomCenter = (x, y) => [x + hexWidth()/2, y + 2 * edgeSize];
     const bottomRight = (x, y) => [x + hexWidth(), y + 3/2 * edgeSize];
 
-    const buildSVGPathString = (vertices) => vertices.map(([x, y]) => `L${x} ${y}`).join('');
+    const moveToSVG = ([x, y]) => `M${x} ${y}`;
+    const lineToSVG = ([x, y]) => `L${x} ${y}`;
+    const buildSVGPathString = (vertices, {startX, startY}) => {
+        const startFrom = vertices[0];
+        const points = vertices.slice(1, vertices.length);
+        return moveToSVG(startFrom(startX, startY))
+            + points.map((vertex) => lineToSVG(vertex(startX, startY))).join('');
+    };
 
     return {
-        generateHexagonSVGPath(startX, startY) {
-            const hexString = `M${startX} ${startY + edgeSize/2}`;
+        generateHexagonSVGPath({startX, startY}) {
             const vertices = [
-                bottomLeft(startX, startY),
-                bottomCenter(startX, startY),
-                bottomRight(startX, startY),
-                topRight(startX, startY),
-                topCenter(startX, startY),
-                topLeft(startX, startY)
+                topLeft,
+                bottomLeft,
+                bottomCenter,
+                bottomRight,
+                topRight,
+                topCenter,
+                topLeft
             ];
-            return hexString + buildSVGPathString(vertices);
+            return buildSVGPathString(vertices, {startX, startY});
+        },
+
+        generateBoardLeftEdgeSVGPath({startX, startY}) {
+            const vertices = [
+                topCenter,
+                topRight,
+                bottomRight,
+                topCenter
+            ];
+            return buildSVGPathString(vertices, {startX, startY});
+        },
+
+        generateBoardRightEdgeSVGPath({startX, startY}) {
+            const vertices = [
+                topLeft,
+                bottomLeft,
+                bottomCenter,
+                topLeft
+            ];
+            return buildSVGPathString(vertices, {startX, startY});
+        },
+
+        generateBoardTopEdgeSVGPath({startX, startY}) {
+            const vertices = [
+                bottomLeft,
+                bottomCenter,
+                bottomRight,
+                bottomLeft
+            ];
+            return buildSVGPathString(vertices, {startX, startY});
+        },
+
+        generateBoardBottomEdgeSVGPath({startX, startY}) {
+            const vertices = [
+                topLeft,
+                topCenter,
+                topRight,
+                topLeft
+            ];
+            return buildSVGPathString(vertices, {startX, startY});
         }
+
     }
 }
 
@@ -42,54 +90,6 @@ export class GameBoardComponent extends Component {
         this.boardSize = 15;
         this.hexWidth = this.edgeSize * Math.sqrt(3);
     }
-    
-    _buildSVGPathString(vertices) {
-        return vertices.map(([x, y]) => `L${x} ${y}`).join('');
-    }
-
-    _generateHexagonSVGPath({startX, startY}, edgeSize) {
-        return hexBoardSVG(this.boardSize, edgeSize).generateHexagonSVGPath(startX, startY);
-    }
-
-    _generateBoardLeftEdgeSVGPath({startX, startY}, edgeSize) {
-        let shapeString = `M${startX} ${startY}`;
-        const vertices = [
-            [startX + this.hexWidth / 2, startY + edgeSize/2],
-            [startX + this.hexWidth / 2, startY + 3/2 * edgeSize],
-            [startX, startY]
-        ];
-        return shapeString + this._buildSVGPathString(vertices);
-    }
-
-    _generateBoardRightEdgeSVGPath({startX, startY}, edgeSize) {
-        let shapeString = `M${startX} ${startY}`;
-        const vertices = [
-            [startX, startY + edgeSize],
-            [startX + this.hexWidth / 2, startY + 3/2 * edgeSize],
-            [startX, startY]
-        ];
-        return shapeString + this._buildSVGPathString(vertices);
-    }
-
-    _generateBoardTopEdgeSVGPath({startX, startY}, edgeSize) {
-        let shapeString = `M${startX} ${startY}`;
-        const vertices = [
-            [startX + this.hexWidth / 2, startY + edgeSize/2],
-            [startX + this.hexWidth, startY],
-            [startX, startY]
-        ];
-        return shapeString + this._buildSVGPathString(vertices);
-    }
-
-    _generateBoardBottomEdgeSVGPath({startX, startY}, edgeSize) {
-        let shapeString = `M${startX} ${startY}`;
-        const vertices = [
-            [startX + this.hexWidth, startY],
-            [startX + this.hexWidth/2, startY - edgeSize/2],
-            [startX, startY]
-        ];
-        return shapeString + this._buildSVGPathString(vertices);
-    }
 
     componentDidMount() {
         const paper = new Raphael(document.getElementById('board'), 1000, 1000);
@@ -99,12 +99,15 @@ export class GameBoardComponent extends Component {
 
         const start = this.start;
 
+        const board = hexBoardSVG(this.boardSize, this.edgeSize);
+
+
         for (let i=0; i < this.boardSize; i++) {
             for (let j=0; j < this.boardSize; j++) {
-                const tile = paper.path(this._generateHexagonSVGPath({
+                const tile = paper.path(board.generateHexagonSVGPath({
                     startX: start.startX + (this.hexWidth * j) + (this.hexWidth/2 * i),
                     startY: start.startY + (3/2 * this.edgeSize * i)
-                }, this.edgeSize)).attr({fill: '#fff'});
+                })).attr({fill: '#fff'});
                 tile.click(
                     function () {
                         this.attr({"fill": bluePlayerColor});
@@ -117,30 +120,30 @@ export class GameBoardComponent extends Component {
             const topStartX = start.startX + this.hexWidth/2;
 
             const bottomStartX = start.startX + (this.hexWidth/2 * this.boardSize);
-            const bottomStartY = start.startY + 3/2 * this.edgeSize * this.boardSize + this.edgeSize/2;
+            const bottomStartY = start.startY + 3/2 * this.edgeSize * this.boardSize;
 
             const rightStart = start.startX + this.boardSize * this.hexWidth;
-            const rightStartY = start.startY + this.edgeSize / 2;
+            const rightStartY = start.startY;
 
-            paper.path(this._generateBoardLeftEdgeSVGPath({
-                startX: start.startX + this.hexWidth / 2 * (i - 1),
+            paper.path(board.generateBoardLeftEdgeSVGPath({
+                startX: start.startX + this.hexWidth/2 * (i-2),
                 startY: start.startY + 3/2 * this.edgeSize * i
-            }, this.edgeSize)).attr({fill: redPlayerColor});
+            })).attr({fill: redPlayerColor});
 
-            paper.path(this._generateBoardRightEdgeSVGPath({
+            paper.path(board.generateBoardRightEdgeSVGPath({
                 startX: rightStart + (this.hexWidth/2 * (i - 1)),
                 startY: rightStartY + (i - 1) * 3/2 * this.edgeSize
-            }, this.edgeSize)).attr({fill: redPlayerColor});
+            })).attr({fill: redPlayerColor});
 
-            paper.path(this._generateBoardTopEdgeSVGPath({
+            paper.path(board.generateBoardTopEdgeSVGPath({
                 startX: topStartX + (i - 1) * this.hexWidth,
-                startY: start.startY
-            }, this.edgeSize)).attr({fill: bluePlayerColor});
+                startY: start.startY - 3/2 * this.edgeSize
+            })).attr({fill: bluePlayerColor});
 
-            paper.path(this._generateBoardBottomEdgeSVGPath({
-                startX: bottomStartX + (i-1) * Math.sqrt(3) * this.edgeSize,
+            paper.path(board.generateBoardBottomEdgeSVGPath({
+                startX: bottomStartX + (i-1) * this.hexWidth,
                 startY: bottomStartY
-            }, this.edgeSize)).attr({fill: bluePlayerColor});
+            })).attr({fill: bluePlayerColor});
         }
     }
 
