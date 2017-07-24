@@ -9,13 +9,16 @@ export class GameBoardComponent extends Component {
         super(props);
 
         this.start = { startX: 10, startY: 10 };
-        this.edgeSize = 25;
-        this.boardSize = 15;
-        this.hexWidth = this.edgeSize * Math.sqrt(3);
+        this.boardSize = 9;
     }
 
     componentDidMount() {
-        const paper = new Raphael(document.getElementById('board'), 1000, 1000);
+        const $el = document.getElementById('board');
+        const maxWidth = parseInt(getComputedStyle($el).width);
+        const paper = new Raphael($el, maxWidth, maxWidth);
+
+        this.edgeSize = parseInt(2/3 * (maxWidth) / (Math.sqrt(3) * this.boardSize));
+        this.hexWidth = this.edgeSize * Math.sqrt(3);
 
         const redPlayerColor = '#fd0006';
         const bluePlayerColor = '#1533ad';
@@ -23,7 +26,6 @@ export class GameBoardComponent extends Component {
         const start = this.start;
 
         const board = hexBoardSVG(this.boardSize, this.edgeSize);
-
 
         for (let i=0; i < this.boardSize; i++) {
             for (let j=0; j < this.boardSize; j++) {
