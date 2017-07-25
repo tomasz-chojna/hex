@@ -1,7 +1,7 @@
 import {hexBoardSVG} from '../../../src/client/helpers/board-svg'
 import {expect} from 'chai';
 
-describe('GameBoardComponent', () => {
+describe('hexBoardSVG', () => {
     const boardSize = 11;
     const edgeSize = 25;
 
