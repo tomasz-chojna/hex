@@ -154,65 +154,23 @@ export class GameBoard extends Component {
         this.boardTiles = new Map();
         this.boardSize = this.props.boardSize;
         this.edgeSize = parseInt(2/3 * (maxWidth) / (Math.sqrt(3) * this.boardSize));
-        this.hexWidth = this.edgeSize * Math.sqrt(3);
-
-        const redPlayerColor = this.props.playerAColor;
-        const bluePlayerColor = this.props.playerBColor;
-
-        const start = this.start;
 
         const board = hexBoardSVG(this.boardSize, this.edgeSize);
+        const tiles = board.drawOn(paper, this.start, [this.props.playerAColor, this.props.playerBColor]);
 
-        for (let i=0; i < this.boardSize; i++) {
-            for (let j=0; j < this.boardSize; j++) {
-                const tile = paper.path(board.hexagon({
-                    startX: start.startX + (this.hexWidth * j) + (this.hexWidth/2 * i),
-                    startY: start.startY + (3/2 * this.edgeSize * i)
-                }));
+        tiles.forEach(({tile, x, y}) => {
+            this.boardTiles.set(this.getBoardTileKey(x, y), {tile: tile, isOccupied: false});
 
-                this.boardTiles.set(this.getBoardTileKey(i, j), {tile: tile, isOccupied: false});
-
-                tile.attr({
-                    fill: this.props.tileBackground,
-                    stroke: this.props.tileOutline
-                });
-                tile.hover(
-                    this.tileHoverInHandler(i, j).bind(this),
-                    this.tileHoverOutHandler(i, j).bind(this)
-                );
-                tile.click(this.tileClickHandler(i, j).bind(this));
-            }
-        }
-
-        for (let i=1; i < this.boardSize; i++) {
-            const topStartX = start.startX + this.hexWidth/2;
-
-            const bottomStartX = start.startX + (this.hexWidth/2 * this.boardSize);
-            const bottomStartY = start.startY + 3/2 * this.edgeSize * this.boardSize;
-
-            const rightStart = start.startX + this.boardSize * this.hexWidth;
-            const rightStartY = start.startY;
-
-            paper.path(board.leftEdge({
-                startX: start.startX + this.hexWidth/2 * (i-2),
-                startY: start.startY + 3/2 * this.edgeSize * i
-            })).attr({fill: redPlayerColor});
-
-            paper.path(board.rightEdge({
-                startX: rightStart + (this.hexWidth/2 * (i - 1)),
-                startY: rightStartY + (i - 1) * 3/2 * this.edgeSize
-            })).attr({fill: redPlayerColor});
-
-            paper.path(board.topEdge({
-                startX: topStartX + (i - 1) * this.hexWidth,
-                startY: start.startY - 3/2 * this.edgeSize
-            })).attr({fill: bluePlayerColor});
-
-            paper.path(board.bottomEdge({
-                startX: bottomStartX + (i-1) * this.hexWidth,
-                startY: bottomStartY
-            })).attr({fill: bluePlayerColor});
-        }
+            tile.attr({
+                fill: this.props.tileBackground,
+                stroke: this.props.tileOutline
+            });
+            tile.hover(
+                this.tileHoverInHandler(x, y).bind(this),
+                this.tileHoverOutHandler(x, y).bind(this)
+            );
+            tile.click(this.tileClickHandler(x, y).bind(this));
+        });
 
         this.renderMoves();
     }

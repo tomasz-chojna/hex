@@ -33,7 +33,7 @@ const client = new ApolloClient({
 ReactDOM.render(
     <ApolloProvider client={client}>
         <BrowserRouter>
-            <div>
+            <div className="container">
                 <Route exact path="/" component={App}/>
                 <Route path="/players" component={ActivePlayersListComponent}/>
                 <Route exact path="/session/:sessionId" component={GameSessionComponent}/>

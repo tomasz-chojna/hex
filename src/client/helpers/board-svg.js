@@ -69,6 +69,53 @@ export function hexBoardSVG(boardSize, edgeSize) {
                 topLeft
             ];
             return buildSVGPathString(vertices, {startX, startY});
+        },
+
+        drawOn(paper, {startX, startY}, [playerAColor, playerBColor]) {
+            const tiles = [];
+
+            for (let i=0; i < boardSize; i++) {
+                for (let j=0; j < boardSize; j++) {
+                    const tile = paper.path(this.hexagon({
+                        startX: startX + (hexWidth() * j) + (hexWidth()/2 * i),
+                        startY: startY + (3/2 * edgeSize * i)
+                    }));
+
+                    tiles.push({x: i, y: j, tile: tile});
+                }
+            }
+
+            for (let i=1; i < boardSize; i++) {
+                const topStartX = startX + hexWidth()/2;
+
+                const bottomStartX = startX + (hexWidth()/2 * boardSize);
+                const bottomStartY = startY + 3/2 * edgeSize * boardSize;
+
+                const rightStart = startX + boardSize * hexWidth();
+                const rightStartY = startY;
+
+                paper.path(this.leftEdge({
+                    startX: startX + hexWidth()/2 * (i-2),
+                    startY: startY + 3/2 * edgeSize * i
+                })).attr({fill: playerAColor});
+
+                paper.path(this.rightEdge({
+                    startX: rightStart + (hexWidth()/2 * (i - 1)),
+                    startY: rightStartY + (i - 1) * 3/2 * edgeSize
+                })).attr({fill: playerAColor});
+
+                paper.path(this.topEdge({
+                    startX: topStartX + (i - 1) * hexWidth(),
+                    startY: startY - 3/2 * edgeSize
+                })).attr({fill: playerBColor});
+
+                paper.path(this.bottomEdge({
+                    startX: bottomStartX + (i-1) * hexWidth(),
+                    startY: bottomStartY
+                })).attr({fill: playerBColor});
+            }
+
+            return tiles;
         }
 
     }

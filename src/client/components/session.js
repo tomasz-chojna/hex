@@ -5,7 +5,7 @@ import {GameBoardComponent} from "./board";
 export class GameSessionComponent extends Component {
     render() {
         return (
-            <div className="container">
+            <div>
                 <GameBoardComponent
                     playerId={'uuid1'}
                     boardSize={11}
