@@ -1,24 +1,28 @@
 import {makeExecutableSchema} from "graphql-tools";
-import Message from './message';
 import Player from './player';
 import resolvers from './../resolvers';
+import GameSession from './game_session';
 
 
 const Query = `
 type Query {
     players: [Player]
+    session(sessionId: ID): GameSession
 }
 
 type Mutation {
     createPlayer(name: String!): Player
+    startGameSession(playerId: ID!): GameSession
+    makeMove(x: Int, y: Int): GameMove
 }
 
 type Subscription {
-    newPlayerJoined: Player
+    playersListUpdates: Player
+    gameSessionUpdates(sessionId: ID!): GameSession
 }
 `;
 
 export default makeExecutableSchema({
-    typeDefs: [Query, Message, Player],
+    typeDefs: [Query, Player, GameSession],
     resolvers,
 });

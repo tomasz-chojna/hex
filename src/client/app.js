@@ -26,7 +26,7 @@ const client = new ApolloClient({
     networkInterface: addGraphQLSubscriptions(
         createNetworkInterface({ uri: '/graphql' }),
         new SubscriptionClient(`ws://localhost:8000/subscriptions`, {
-            reconnect: true
+            reconnect: true,
         })
     )
 });

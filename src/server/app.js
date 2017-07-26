@@ -11,6 +11,7 @@ const PORT = 8000;
 
 const app = express();
 const server = createServer(app);
+
 new SubscriptionServer({ schema, execute, subscribe }, { server, path: WS_GQL_PATH });
 
 app.use(express.static('public'));
