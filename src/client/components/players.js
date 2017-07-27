@@ -38,7 +38,7 @@ class ActivePlayersList extends Component {
     }
 
     async startGame(player) {
-        const result = await this.props.mutate({variables: { playerId: player.id }});
+        const result = await this.props.mutate({variables: { playerA: player.id, playerB: 'uuid1' }});
         this.props.history.push(`/session/${result.data.startGameSession.id}`);
     }
 
@@ -64,8 +64,8 @@ export const ActivePlayersListComponent = compose(
       }
     `),
     graphql(gql`
-    mutation startGameSession($playerId: ID!) {
-        startGameSession(playerId: $playerId) {
+    mutation startGameSession($playerA: ID!, $playerB: ID!) {
+        startGameSession(playerA: $playerA, playerB: $playerB) {
             id
         }
     }

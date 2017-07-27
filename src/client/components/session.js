@@ -7,6 +7,7 @@ export class GameSessionComponent extends Component {
         return (
             <div>
                 <GameBoardComponent
+                    sessionId={this.props.match.params.sessionId}
                     playerId={'uuid1'}
                     boardSize={11}
                     tileOutline={'#000'}

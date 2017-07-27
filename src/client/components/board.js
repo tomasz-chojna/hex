@@ -8,6 +8,7 @@ import {gql, graphql, compose} from "react-apollo";
 export class GameBoard extends Component {
 
     static propTypes = {
+        sessionId: PropTypes.string.isRequired,
         playerId: PropTypes.string.isRequired,
         boardSize: PropTypes.number.isRequired,
         playerAColor: PropTypes.string.isRequired,
@@ -64,7 +65,9 @@ export class GameBoard extends Component {
                 return;
             }
 
-            this.props.mutate({ variables: { x, y } });
+            this.props.mutate({
+                variables: { x, y, playerId: this.props.playerId, sessionId: this.props.sessionId }
+            });
         }
     }
 
@@ -196,8 +199,8 @@ export class GameBoard extends Component {
 
 export const GameBoardComponent = compose(
     graphql(gql`
-      query {
-        session(sessionId: "abcd") {
+      query session($sessionId: ID!) {
+        session(sessionId: $sessionId) {
           id
           start
           startingPlayer
@@ -213,14 +216,22 @@ export const GameBoardComponent = compose(
           }
         }
       }
-    `),
+    `, {
+        options: (ownProps) => {
+            return {
+                variables: {
+                    sessionId: ownProps.sessionId
+                }
+            }
+        }
+    }),
     graphql(gql`
-    mutation makeMove($x: Int!, $y: Int!) {
-        makeMove(x: $x, y: $y) {
+    mutation makeMove($sessionId: ID!, $playerId: ID!, $x: Int!, $y: Int!) {
+        makeMove(sessionId: $sessionId, playerId: $playerId, x: $x, y: $y) {
             x
             y
             playerId
         }
       }
-    `)
+    `),
 )(GameBoard);

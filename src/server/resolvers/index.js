@@ -2,22 +2,10 @@ import uuid4 from 'uuid/v4'
 import { PubSub, withFilter } from 'graphql-subscriptions';
 
 const pubsub = new PubSub();
+
+// Temporarily in-memory, will be moved to Redis
 const players = [];
-const session = {
-    id: 'session-id',
-    start: 1000,
-    end: 2000,
-    boardSize: 11,
-    winner: 'uuid2',
-    status: 'INTERRUPTED',
-    startingPlayer: 'uuid1',
-    currentMove: 'uuid2',
-    players: ['uuid1', 'uuid2'],
-    moves: [
-        {playerId: 'uuid1', x: 0, y: 0, timestamp: 1000},
-        {playerId: 'uuid2', x: 0, y: 1, timestamp: 2000},
-    ]
-};
+const sessions = new Map();
 
 export default {
     Query: {
@@ -25,7 +13,8 @@ export default {
             return players;
         },
         session: async (_, {sessionId}) => {
-            return session;
+            console.log(sessionId, sessions);
+            return sessions.get(sessionId);
         }
     },
     Mutation: {
@@ -41,15 +30,34 @@ export default {
 
             return player;
         },
-        startGameSession: async (_, args) => {
-            session.id = uuid4();
+
+        startGameSession: async (_, {playerA, playerB}) => {
+            const players = [playerA, playerB];
+            const startingPlayer = players[Math.floor(Math.random() * 2)];
+
+            const session = {
+                id: uuid4(),
+                start: new Date().getTime().toString(),
+                end: null,
+                boardSize: 11,
+                winner: null,
+                status: 'ACTIVE',
+                startingPlayer: startingPlayer,
+                currentMove: startingPlayer,
+                players: new Set(players),
+                moves: []
+            };
+
+            sessions.set(session.id, session);
             return session;
         },
-        makeMove: async (_, args) => {
+
+        makeMove: async (_, {x, y, playerId, sessionId}) => {
+            const session = sessions.get(sessionId);
             session.moves.push({
-                playerId: 'uuid2',
-                x: args.x,
-                y: args.y
+                playerId: playerId,
+                x: x,
+                y: y
             });
             pubsub.publish('gameSessionUpdates', {gameSessionUpdates: session});
         }

@@ -16,8 +16,8 @@ enum GameSessionStatus {
 type GameSession {
     id: ID!
     status: GameSessionStatus!
-    start: Int!
-    end: Int
+    start: String!
+    end: String
     players: [ID]!
     startingPlayer: ID!
     currentMove: ID!
