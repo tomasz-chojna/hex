@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {gql, graphql, compose} from 'react-apollo';
 import {Redirect} from "react-router-dom";
+import Cookie from 'js-cookie';
 
 
 class LoginComponent extends Component {
@@ -11,10 +12,12 @@ class LoginComponent extends Component {
         this.onInputChange = this.onInputChange.bind(this);
     }
 
-    login(e) {
-        this.props.mutate({ variables: { name: this.state.userName } });
-        this.setState({redirectToNextState: true});
+    async login(e) {
         e.preventDefault();
+
+        const result = await this.props.mutate({ variables: { name: this.state.userName } });
+        Cookie.set('authToken', result.data.createPlayer.id, { expires: 1} );
+        this.setState({redirectToNextState: true});
     }
 
     onInputChange(event) {

@@ -24,39 +24,24 @@ export class GameBoard extends Component {
         const playerBColorIndex = (playerAColorIndex === 0) ? 1 : 0;
 
         this.playersColors = new Map();
-        this.playersColors.set(this.state.data.session.players[0].id, availableColors[playerAColorIndex]);
-        this.playersColors.set(this.state.data.session.players[1].id, availableColors[playerBColorIndex]);
+        this.playersColors.set(this.props.data.session.players[0], availableColors[playerAColorIndex]);
+        this.playersColors.set(this.props.data.session.players[1], availableColors[playerBColorIndex]);
     }
 
     constructor(props) {
         super(props);
 
         this.start = { startX: 10, startY: 10 };
-        this.state = {};
-        this.state.data = {
-            session: {
-                players: [{
-                    id: 'uuid1'
-                }, {
-                    id: 'uuid2'
-                }],
-                moves: [
-                    {x: 0, y: 0, playerId: 'uuid1'},
-                    {x: 1, y: 1, playerId: 'uuid2'},
-                    {x: 2, y: 2, playerId: 'uuid1'}
-                ],
-                currentMove: 'uuid1'
-            }
-        };
-
         this.paper = null;
-        this.definePlayersColor();
     }
 
     tileClickHandler(x, y) {
         return function () {
-            if (this.state.data.session.currentMove !== this.props.playerId) {
-                console.log('Could not handle this move, opponent is making his move at the moment');
+            if (this.props.data.session.currentMove !== this.props.playerId) {
+                console.log(
+                    'Could not handle this move, opponent is making his move at the moment',
+                    this.props.data.session.currentMove, this.props.playerId
+                );
                 return;
             }
 
@@ -66,7 +51,7 @@ export class GameBoard extends Component {
             }
 
             this.props.mutate({
-                variables: { x, y, playerId: this.props.playerId, sessionId: this.props.sessionId }
+                variables: { x, y, playerId: this.props.playerId, sessionId: this.props.data.session.id }
             });
         }
     }
@@ -149,6 +134,8 @@ export class GameBoard extends Component {
         if (this.paper) {
             this.paper.remove();
         }
+
+        this.definePlayersColor();
 
         const maxWidth = parseInt(getComputedStyle(this.boardDiv).width);
         const paper = new Raphael(this.boardDiv, maxWidth, maxWidth);

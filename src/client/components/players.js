@@ -2,9 +2,15 @@ import {gql, graphql, compose} from "react-apollo";
 import React from 'react';
 import {Component} from "react";
 import {Redirect} from "react-router";
+import Cookie from 'js-cookie';
+import PropTypes from 'prop-types';
 
 
 class ActivePlayersList extends Component {
+
+    static propTypes = {
+        history: PropTypes.object.isRequired
+    }
 
     constructor(props) {
         super(props);
@@ -38,7 +44,8 @@ class ActivePlayersList extends Component {
     }
 
     async startGame(player) {
-        const result = await this.props.mutate({variables: { playerA: player.id, playerB: 'uuid1' }});
+        const playerId = Cookie.get('authToken');
+        const result = await this.props.mutate({variables: { playerA: player.id, playerB: playerId }});
         this.props.history.push(`/session/${result.data.startGameSession.id}`);
     }
 

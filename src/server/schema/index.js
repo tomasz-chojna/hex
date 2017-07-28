@@ -8,6 +8,7 @@ const Query = `
 type Query {
     players: [Player]
     session(sessionId: ID): GameSession
+    currentSession: CurrentGameSession
 }
 
 type Mutation {
@@ -18,6 +19,7 @@ type Mutation {
 
 type Subscription {
     playersListUpdates: Player
+    gameSessionStarted(playerId: ID): GameSession
     gameSessionUpdates(sessionId: ID!): GameSession
 }
 `;

@@ -13,6 +13,10 @@ enum GameSessionStatus {
     FINISHED
 }
 
+type CurrentGameSession {
+    id: ID
+}
+
 type GameSession {
     id: ID!
     status: GameSessionStatus!

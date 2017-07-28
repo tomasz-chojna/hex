@@ -12,8 +12,13 @@ export default {
         players: async () => {
             return players;
         },
+        currentSession: async () => {
+            return {};
+        },
         session: async (_, {sessionId}) => {
-            console.log(sessionId, sessions);
+            if (!sessions.has(sessionId)) {
+                throw new Error(`Session ${sessionId} does not exist`);
+            }
             return sessions.get(sessionId);
         }
     },
@@ -22,7 +27,7 @@ export default {
             const player = {
                 id: uuid4(),
                 name: args.name,
-                availabilityStatus: 'AVAILABLE'
+                availabilityStatus: 'AVAILABLE',
             };
 
             players.push(player);
@@ -49,16 +54,25 @@ export default {
             };
 
             sessions.set(session.id, session);
+
+            pubsub.publish('gameSessionStarted', {gameSessionStarted: session});
             return session;
         },
 
         makeMove: async (_, {x, y, playerId, sessionId}) => {
             const session = sessions.get(sessionId);
+            const players = [...session.players];
+
+            const currentMoveIndex = players.indexOf(session.currentMove);
+            const nextMoveIndex = (currentMoveIndex === 0) ? 1 : 0;
+
+            session.currentMove = players[nextMoveIndex];
             session.moves.push({
                 playerId: playerId,
                 x: x,
                 y: y
             });
+            sessions.set(sessionId, session);
             pubsub.publish('gameSessionUpdates', {gameSessionUpdates: session});
         }
     },
@@ -72,6 +86,12 @@ export default {
         gameSessionUpdates: {
             subscribe: withFilter(
                 () => pubsub.asyncIterator('gameSessionUpdates'),
+                (payload, variables) => true
+            )
+        },
+        gameSessionStarted: {
+            subscribe: withFilter(
+                () => pubsub.asyncIterator('gameSessionStarted'),
                 (payload, variables) => true
             )
         }

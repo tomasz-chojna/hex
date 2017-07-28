@@ -3,7 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import {LoginComponentWithCreatingPlayer} from "./components/login";
 import {BrowserRouter, Route} from "react-router-dom";
-import {ActivePlayersListComponent} from "./components/players";
+import {WaitingRoomComponent} from "./components/waiting_room";
 import {addGraphQLSubscriptions, SubscriptionClient} from "subscriptions-transport-ws";
 import {GameSessionComponent} from "./components/session";
 
@@ -35,7 +35,7 @@ ReactDOM.render(
         <BrowserRouter>
             <div className="container">
                 <Route exact path="/" component={App}/>
-                <Route path="/players" component={ActivePlayersListComponent}/>
+                <Route path="/players" component={WaitingRoomComponent}/>
                 <Route exact path="/session/:sessionId" component={GameSessionComponent}/>
                 <Route exact path="/session/:sessionId/winner"/>
             </div>

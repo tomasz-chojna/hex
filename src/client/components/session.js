@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {GameBoardComponent} from "./board";
+import Cookie from 'js-cookie';
 
 
 export class GameSessionComponent extends Component {
@@ -8,7 +9,7 @@ export class GameSessionComponent extends Component {
             <div>
                 <GameBoardComponent
                     sessionId={this.props.match.params.sessionId}
-                    playerId={'uuid1'}
+                    playerId={Cookie.get('authToken')}
                     boardSize={11}
                     tileOutline={'#000'}
                     tileBackground={'#fff'}
