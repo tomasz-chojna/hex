@@ -1,11 +1,8 @@
 import uuid4 from 'uuid/v4'
 import { PubSub, withFilter } from 'graphql-subscriptions';
-
+import {players, sessions} from '../cache/all';
 const pubsub = new PubSub();
 
-// Temporarily in-memory, will be moved to Redis
-const players = [];
-const sessions = new Map();
 
 export default {
     Query: {
@@ -49,7 +46,7 @@ export default {
                 status: 'ACTIVE',
                 startingPlayer: startingPlayer,
                 currentMove: startingPlayer,
-                players: new Set(players),
+                players: players,
                 moves: []
             };
 
@@ -61,12 +58,10 @@ export default {
 
         makeMove: async (_, {x, y, playerId, sessionId}) => {
             const session = sessions.get(sessionId);
-            const players = [...session.players];
-
-            const currentMoveIndex = players.indexOf(session.currentMove);
+            const currentMoveIndex = session.players.indexOf(session.currentMove);
             const nextMoveIndex = (currentMoveIndex === 0) ? 1 : 0;
 
-            session.currentMove = players[nextMoveIndex];
+            session.currentMove = session.players[nextMoveIndex];
             session.moves.push({
                 playerId: playerId,
                 x: x,
@@ -74,6 +69,7 @@ export default {
             });
             sessions.set(sessionId, session);
             pubsub.publish('gameSessionUpdates', {gameSessionUpdates: session});
+            return session;
         }
     },
     Subscription: {

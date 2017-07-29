@@ -19,13 +19,9 @@ export class GameBoard extends Component {
     };
 
     definePlayersColor() {
-        const availableColors = [this.props.playerAColor, this.props.playerBColor];
-        const playerAColorIndex = Math.floor(Math.random() * 2);
-        const playerBColorIndex = (playerAColorIndex === 0) ? 1 : 0;
-
         this.playersColors = new Map();
-        this.playersColors.set(this.props.data.session.players[0], availableColors[playerAColorIndex]);
-        this.playersColors.set(this.props.data.session.players[1], availableColors[playerBColorIndex]);
+        this.playersColors.set(this.props.data.session.players[0], this.props.playerAColor);
+        this.playersColors.set(this.props.data.session.players[1], this.props.playerBColor);
     }
 
     constructor(props) {
@@ -40,7 +36,7 @@ export class GameBoard extends Component {
             if (this.props.data.session.currentMove !== this.props.playerId) {
                 console.log(
                     'Could not handle this move, opponent is making his move at the moment',
-                    this.props.data.session.currentMove, this.props.playerId
+                    'current', this.props.data.session.currentMove, 'playerId', this.props.playerId
                 );
                 return;
             }
@@ -95,6 +91,8 @@ export class GameBoard extends Component {
         });
         boardTile.isOccupied = true;
 
+        console.log(this.playersColors);
+
         console.log(`Filled ${this.getBoardTileKey(x, y)} tile for ${playerId} with color ${playerColor}`);
     }
 
@@ -103,6 +101,7 @@ export class GameBoard extends Component {
             document: gql`
             subscription gameSessionUpdates($sessionId: ID) {
                 gameSessionUpdates(sessionId: $sessionId) {
+                    currentMove
                     moves {
                         x
                         y
@@ -119,7 +118,6 @@ export class GameBoard extends Component {
                 if (previousState.session) {
                     session = previousState.session;
                 }
-
                 const newSession = Object.assign({}, session, subscriptionData.data.gameSessionUpdates);
                 return {session: newSession};
             }
@@ -215,9 +213,7 @@ export const GameBoardComponent = compose(
     graphql(gql`
     mutation makeMove($sessionId: ID!, $playerId: ID!, $x: Int!, $y: Int!) {
         makeMove(sessionId: $sessionId, playerId: $playerId, x: $x, y: $y) {
-            x
-            y
-            playerId
+            currentMove
         }
       }
     `),

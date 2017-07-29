@@ -14,7 +14,7 @@ type Query {
 type Mutation {
     createPlayer(name: String!): Player
     startGameSession(playerA: ID!, playerB: ID!): GameSession
-    makeMove(sessionId: ID!, playerId: ID!, x: Int, y: Int): GameMove
+    makeMove(sessionId: ID!, playerId: ID!, x: Int, y: Int): GameSession
 }
 
 type Subscription {
