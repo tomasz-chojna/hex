@@ -22,7 +22,7 @@ type GameSession {
     status: GameSessionStatus!
     start: String!
     end: String
-    players: [ID]!
+    players: [Player]!
     startingPlayer: ID!
     currentMove: ID!
     winner: ID

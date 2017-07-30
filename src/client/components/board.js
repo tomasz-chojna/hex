@@ -20,8 +20,8 @@ export class GameBoard extends Component {
 
     definePlayersColor() {
         this.playersColors = new Map();
-        this.playersColors.set(this.props.data.session.players[0], this.props.playerAColor);
-        this.playersColors.set(this.props.data.session.players[1], this.props.playerBColor);
+        this.playersColors.set(this.props.data.session.players[0].id, this.props.playerAColor);
+        this.playersColors.set(this.props.data.session.players[1].id, this.props.playerBColor);
     }
 
     constructor(props) {
@@ -193,7 +193,9 @@ export const GameBoardComponent = compose(
           status
           winner
           boardSize
-          players
+          players {
+            id
+          }
           moves {
             playerId
             x

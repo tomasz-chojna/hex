@@ -16,7 +16,11 @@ export default {
             if (!sessions.has(sessionId)) {
                 throw new Error(`Session ${sessionId} does not exist`);
             }
-            return sessions.get(sessionId);
+
+            const session = sessions.get(sessionId);
+            const resolvedSession = Object.assign({}, session);
+            resolvedSession.players = session.players.map(playerId => players.find(player => player.id === playerId));
+            return resolvedSession;
         }
     },
     Mutation: {
@@ -52,8 +56,10 @@ export default {
 
             sessions.set(session.id, session);
 
-            pubsub.publish('gameSessionStarted', {gameSessionStarted: session});
-            return session;
+            const resolvedSession = Object.assign({}, session);
+            resolvedSession.players = session.players.map(playerId => players.find(player => player.id === playerId));
+            pubsub.publish('gameSessionStarted', {gameSessionStarted: resolvedSession});
+            return resolvedSession;
         },
 
         makeMove: async (_, {x, y, playerId, sessionId}) => {
@@ -68,8 +74,11 @@ export default {
                 y: y
             });
             sessions.set(sessionId, session);
-            pubsub.publish('gameSessionUpdates', {gameSessionUpdates: session});
-            return session;
+
+            const resolvedSession = Object.assign({}, session);
+            resolvedSession.players = session.players.map(playerId => players.find(player => player.id === playerId));
+            pubsub.publish('gameSessionUpdates', {gameSessionUpdates: resolvedSession});
+            return resolvedSession;
         }
     },
     Subscription: {

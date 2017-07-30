@@ -25,7 +25,7 @@ class App extends React.Component {
 const client = new ApolloClient({
     networkInterface: addGraphQLSubscriptions(
         createNetworkInterface({ uri: '/graphql' }),
-        new SubscriptionClient(`ws://localhost:8000/subscriptions`, {
+        new SubscriptionClient(`ws://${window.location.host}/subscriptions`, {
             reconnect: true,
         })
     )
