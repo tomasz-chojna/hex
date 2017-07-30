@@ -122,6 +122,12 @@ export class GameBoard extends Component {
                 return {session: newSession};
             }
         });
+
+        window.addEventListener("resize", this.componentDidUpdate.bind(this));
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.componentDidUpdate.bind(this));
     }
 
     componentDidUpdate() {
