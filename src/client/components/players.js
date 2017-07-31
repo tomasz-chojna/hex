@@ -49,14 +49,25 @@ class ActivePlayersList extends Component {
         this.props.history.push(`/session/${result.data.startGameSession.id}`);
     }
 
+    renderPlayer(player) {
+        return <li key={player.id} className="list-group-item">
+            <span>{player.name}</span>
+            <a href="#" className="pull-right" onClick={() => this.startGame(player)}>Play</a>
+        </li>
+    }
+
     render() {
         if (this.props.data.loading) {
             return <h1>Loading...</h1>;
         }
 
-        return <ul>
-            {this.props.data.players.map((player) => <li key={player.id}>{player.name} - <a href="#" onClick={() => this.startGame(player)}>Play</a></li>)}
-            </ul>
+        return <div className="row">
+            <div className="col-md-offset-3 col-md-6">
+                <ul className="list-group">
+                    { this.props.data.players.map((player) => this.renderPlayer(player)) }
+                </ul>
+            </div>
+        </div>
     }
 }
 

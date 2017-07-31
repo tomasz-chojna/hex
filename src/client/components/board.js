@@ -147,7 +147,10 @@ export class GameBoard extends Component {
 
         this.boardTiles = new Map();
         this.boardSize = this.props.boardSize;
-        this.edgeSize = parseInt(2/3 * (maxWidth) / (Math.sqrt(3) * this.boardSize));
+
+        const borderWidth = 22;
+        const connectedHexagons = Math.floor(this.boardSize / 2) + this.boardSize;
+        this.edgeSize = (maxWidth - borderWidth) / (connectedHexagons * Math.sqrt(3));
 
         const board = hexBoardSVG(this.boardSize, this.edgeSize);
         const tiles = board.drawOn(paper, this.start, [this.props.playerAColor, this.props.playerBColor]);

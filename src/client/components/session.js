@@ -16,7 +16,7 @@ export class GameSessionComponent extends Component {
                 <GameBoardComponent
                     sessionId={this.props.match.params.sessionId}
                     playerId={Cookie.get('authToken')}
-                    boardSize={11}
+                    boardSize={7}
                     tileOutline={'#000'}
                     tileBackground={'#fff'}
                     tileHoverColor={'#ddd'}

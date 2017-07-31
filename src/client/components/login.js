@@ -40,9 +40,9 @@ class LoginComponent extends Component {
         }
 
         return (
-            <div>
+            <div className="login-container-form">
                 <form>
-                    <h1 className="text-center">Login</h1>
+                    <h1 className="text-center">Welcome to Hex!</h1>
 
                     <div className="form-group">
                         <input

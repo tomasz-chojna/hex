@@ -30,7 +30,7 @@ class WaitingRoom extends Component {
 
         return (
             <div>
-                <h1>Waiting room</h1>
+                <h1 className="text-center">Waiting room</h1>
                 <ActivePlayersListComponent history={this.props.history}/>
             </div>
         );
