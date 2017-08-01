@@ -28,3 +28,21 @@ body, html {
 .login-container-form {
     width: 40%;
 }
+
+.game-session {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.game-status-component {
+    flex: 1;
+}
+
+.game-board-component {
+    flex: 7;
+}
+
+#board {
+    height: 100%;
+}

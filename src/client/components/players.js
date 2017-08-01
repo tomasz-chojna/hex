@@ -51,7 +51,7 @@ class ActivePlayersList extends Component {
 
     renderPlayer(player) {
         return <li key={player.id} className="list-group-item">
-            <span>{player.name}</span>
+            <span className="label label-success">{player.availabilityStatus}</span> - <span>{player.name}</span>
             <a href="#" className="pull-right" onClick={() => this.startGame(player)}>Play</a>
         </li>
     }

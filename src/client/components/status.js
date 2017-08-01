@@ -22,7 +22,7 @@ class GameStatus extends Component {
         const playerABadge = (this.props.data.session.currentMove === players[0].id) ? badge : null;
         const playerBBadge = (this.props.data.session.currentMove === players[1].id) ? badge : null;
 
-        return <div className="row">
+        return <div className="row game-status-component">
             <div className="col-md-6">
                 <ul className="list-group">
                     <li className="list-group-item">

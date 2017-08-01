@@ -142,15 +142,21 @@ export class GameBoard extends Component {
         this.definePlayersColor();
 
         const maxWidth = parseInt(getComputedStyle(this.boardDiv).width);
-        const paper = new Raphael(this.boardDiv, maxWidth, maxWidth);
+        const maxHeight = parseInt(getComputedStyle(this.boardDiv).height);
+        const paper = new Raphael(this.boardDiv, maxWidth, maxHeight);
         this.paper = paper;
 
         this.boardTiles = new Map();
         this.boardSize = this.props.boardSize;
 
         const borderWidth = 22;
+        const bottomMargin = this.start.startY;
         const connectedHexagons = Math.floor(this.boardSize / 2) + this.boardSize;
-        this.edgeSize = (maxWidth - borderWidth) / (connectedHexagons * Math.sqrt(3));
+
+        const maxEdgeSizeWidth = (maxWidth - borderWidth) / (connectedHexagons * Math.sqrt(3));
+        const maxEdgeSizeHeight = (2 * (maxHeight - this.start.startY - bottomMargin)) / (3 * this.boardSize + 1);
+
+        this.edgeSize = Math.min(maxEdgeSizeWidth, maxEdgeSizeHeight);
 
         const board = hexBoardSVG(this.boardSize, this.edgeSize);
         const tiles = board.drawOn(paper, this.start, [this.props.playerAColor, this.props.playerBColor]);
@@ -184,7 +190,7 @@ export class GameBoard extends Component {
         const session = this.props.data.session;
         console.log(session);
 
-        return <div>
+        return <div className="game-board-component">
             <div id="board" ref={(div) => this.boardDiv = div} />
         </div>
     }

@@ -7,7 +7,7 @@ import {GameStatusComponent} from "./status";
 export class GameSessionComponent extends Component {
     render() {
         return (
-            <div>
+            <div className="game-session">
                 <GameStatusComponent
                     sessionId={this.props.match.params.sessionId}
                     playerId={Cookie.get('authToken')}
