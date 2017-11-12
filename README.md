@@ -7,6 +7,7 @@
 
 Technically, solving for a winner requires finding a path between the opposite sides of the board, which is implemented here as traversing a graph consisting of hexagons (nodes) linked to each other through their edges. [Breadth-first search](https://en.wikipedia.org/wiki/Breadth-first_search) graph traversal algorithm is used. See [here](/).
 
+
 ![Board graph](/designs/winner_algorithm.png)
 
 ## Backend
