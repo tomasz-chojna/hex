@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon --exec babel-node --presets es2015,stage-0 src/server/app.js",
-    "test": "mocha test/**/*.js --compilers babel-register"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,12 @@
   "devDependencies": {
     "jest": "^19.0.2"
   },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ]
+  },
   "dependencies": {
     "apollo-client": "^1.9.0-1",
     "babel-cli": "^6.24.1",
@@ -31,6 +37,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.24.1",
+    "bunyan": "^1.8.12",
     "chai": "^4.1.0",
     "coveralls": "^2.13.1",
     "express": "^4.15.3",

@@ -7,7 +7,6 @@ import {SubscriptionServer} from "subscriptions-transport-ws";
 
 
 const WS_GQL_PATH = '/subscriptions';
-const PORT = 8000;
 
 const app = express();
 const server = createServer(app);
@@ -22,6 +21,6 @@ app.use('/graphql', graphqlHTTP({
 }));
 app.get('*', (req, res) => res.render('index', {}));
 
-server.listen(PORT, () => {
-    console.log(`Server is now listening at ${PORT}`);
+server.listen(process.env.PORT, () => {
+    console.log(`Server is now listening at ${process.env.PORT}`);
 });

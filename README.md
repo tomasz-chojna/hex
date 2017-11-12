@@ -23,8 +23,11 @@ Frontend of the game is built as a Single Page Application using Facebook's Reac
 
 The following views can be presented in the app:
 
-- Registration (regular registration with email)
 - Homepage with Login (including fb login)
+
+![Homepage](/designs/homepage.png)
+
+- Registration (regular registration with email)
 - Fb login account creation confirmation (setting up a profile)
 - Online players view
 - Game invitation
