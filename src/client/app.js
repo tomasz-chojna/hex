@@ -3,18 +3,15 @@ import React from "react";
 import ReactDOM from "react-dom";
 import {LoginComponentWithCreatingPlayer} from "./components/login";
 import {BrowserRouter, Route} from "react-router-dom";
-import {ActivePlayersListComponent} from "./components/players";
+import {WaitingRoomComponent} from "./components/waiting_room";
 import {addGraphQLSubscriptions, SubscriptionClient} from "subscriptions-transport-ws";
+import {GameSessionComponent} from "./components/session";
 
 class App extends React.Component {
     render() {
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-4 col-md-offset-4">
-                        <LoginComponentWithCreatingPlayer nextState="/players"/>
-                    </div>
-                </div>
+            <div className="login-container">
+                <LoginComponentWithCreatingPlayer nextState="/players"/>
             </div>
         )
     }
@@ -24,18 +21,18 @@ class App extends React.Component {
 const client = new ApolloClient({
     networkInterface: addGraphQLSubscriptions(
         createNetworkInterface({ uri: '/graphql' }),
-        new SubscriptionClient(`ws://localhost:8000/subscriptions`, {
-            reconnect: true
+        new SubscriptionClient(`ws://${window.location.host}/subscriptions`, {
+            reconnect: true,
         })
     )
 });
 ReactDOM.render(
     <ApolloProvider client={client}>
         <BrowserRouter>
-            <div>
+            <div className="container app-container">
                 <Route exact path="/" component={App}/>
-                <Route path="/players" component={ActivePlayersListComponent}/>
-                <Route exact path="/session/:sessionId"/>
+                <Route path="/players" component={WaitingRoomComponent}/>
+                <Route exact path="/session/:sessionId" component={GameSessionComponent}/>
                 <Route exact path="/session/:sessionId/winner"/>
             </div>
         </BrowserRouter>
